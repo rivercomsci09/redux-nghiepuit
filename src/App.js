@@ -50,7 +50,7 @@ class App extends Component {
     this.setState({
       tasks : tasks
     });
-    localStorage.setItem('task', JSON.stringify(tasks));
+    localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
   render() {
