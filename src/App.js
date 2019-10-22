@@ -91,9 +91,9 @@ class App extends Component {
             <button type="button" className="btn btn-primary" onClick={ this.onToggleForm }>
               <span className="fa fa-plus mr-5"></span>Thêm Công Việc
             </button>
-            <button type="button" className="btn btn-success ml-5" onClick={this.onGenerateData}>
+            {/* <button type="button" className="btn btn-success ml-5" onClick={this.onGenerateData}>
               Generate Data
-            </button>
+            </button> */}
             {/* Search - Sort */}
             <Control />
             {/** List */}
