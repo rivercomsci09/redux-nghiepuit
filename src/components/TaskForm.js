@@ -32,15 +32,45 @@ class TaskForm extends Component {
     }
     onClear = () => {
         this.setState({
+            id : '',
             name : '',
             status : false
         });
     }
+
+    componentWillMount() {
+        if(this.props.task){
+            this.setState({
+                id : this.props.task.id,
+                name : this.props.task.name,
+                status : this.props.task.status
+            });
+        }
+    }
+
+    componentWillReceiveProps(nextprops){
+        if(nextprops && nextprops.task){
+            this.setState({
+                id : nextprops.task.id,
+                name : nextprops.task.name,
+                status : nextprops.task.status
+            });
+        } else if (nextprops && nextprops.task === null){
+            this.setState({
+                id : '',
+                name : '',
+                status : false
+            });
+        }
+    }
+    
     render() {
+        var {id} = this.state;
         return (
+            
             <div className="panel panel-warning">
                 <div className="panel-heading">
-                    <h3 className="panel-title">Thêm Công Việc
+                    <h3 className="panel-title">{id !== '' ? "Update Tasks" : "Thêm Công Việc"}
                   <span className="fa fa-times-circle text-right" onClick= {this.onCloseForm}></span>
                     </h3>
                 </div>
