@@ -28,3 +28,7 @@
 .mt-15 {
   margin-top: 15px;
 }
+
+.sort_selected {
+  color: red;
+}

@@ -10,7 +10,14 @@ class App extends Component {
     this.state = {
       tasks: [], //id, name, status
       isDisplayForm: false,
-      tasksEditing: null
+      tasksEditing: null,
+      filter: {
+        name: '',
+        status: -1
+      },
+      keyword : '',
+      sortBy : 'name',
+      sortValue : 1
     }
   }
 
@@ -57,15 +64,15 @@ class App extends Component {
   }
 
   onToggleForm = () => { // Them tasks
-    if(this.state.isDisplayForm && this.state.tasksEditing !== null){
+    if (this.state.isDisplayForm && this.state.tasksEditing !== null) {
       this.setState({
         isDisplayForm: true,
-        tasksEditing : null
+        tasksEditing: null
       });
     } else {
       this.setState({
         isDisplayForm: !this.state.isDisplayForm,
-        tasksEditing : null
+        tasksEditing: null
       });
     }
   }
@@ -91,7 +98,7 @@ class App extends Component {
     });
     // console.log(this.state.tasks)
     // console.log(this.state.tasksEditing);
-    
+
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
@@ -146,9 +153,65 @@ class App extends Component {
     this.onShowForm();
   }
 
+  onFilter = (filterName, filterStatus) => {
+    filterStatus = parseInt(filterStatus);
+    this.setState({
+      filter: {
+        name: filterName.toLowerCase(),
+        status: filterStatus
+      }
+    });
+  }
+
+  onSearch = (keyword) => {
+    this.setState({
+      keyword : keyword
+    });
+    
+  }
+
+  onSort = (sortBy, sortValue) => {
+    this.setState({
+      sortBy : sortBy,
+      sortValue : sortValue
+    });
+  }
   render() {
-    var { tasks, isDisplayForm, tasksEditing } = this.state; //var tasks = this.state.tasks 
+    var { tasks, isDisplayForm, tasksEditing, filter, keyword, sortBy, sortValue } = this.state; //var tasks = this.state.tasks 
+    if(sortBy === 'name'){
+      tasks.sort((a,b) => {
+        if(a.name > b.name) return sortValue;
+        else if(a.name < b.name) return -sortValue;
+        else return 0;
+      });
+    } else {
+      tasks.sort((a,b) => {
+        if(a.staus > b.status) return -sortValue;
+        else if(a.status < b.status) return sortValue;
+        else return 0;
+      });
+    }
     var elmTaskForm = isDisplayForm ? <TaskForm onSubmit={this.onSubmit} onCloseForm={this.onCloseForm} task={tasksEditing} /> : '';
+    if (filter) {
+      if (filter.name) {
+        tasks = tasks.filter((task) => {
+          return task.name.toLowerCase().indexOf(filter.name) !== -1;
+        })
+      }
+      tasks = tasks.filter((task) => {
+        if (filter.status === -1) {
+          return task;
+        } else {
+          return task.status === (filter.status === 1 ? true : false)
+        }
+      })
+    }
+
+    if(keyword) {
+      tasks = tasks.filter((task) => {
+        return task.name.toLowerCase().indexOf(keyword) !== -1;
+      })
+    }
     return (
       <div className="container">
         <h1>Quản Lý Công Việc</h1>
@@ -165,11 +228,11 @@ class App extends Component {
               Generate Data
             </button> */}
             {/* Search - Sort */}
-            <Control />
+            <Control onSearch = {this.onSearch} onSort={this.onSort} sortBy={sortBy} sortValue={sortValue}/>
             {/** List */}
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <TaskList tasks={tasks} onUpdateStatus={this.onUpdateStatus} onDelete={this.onDelete} onUpdate={this.onUpdate} />
+                <TaskList tasks={tasks} onUpdateStatus={this.onUpdateStatus} onDelete={this.onDelete} onUpdate={this.onUpdate} onFilter={this.onFilter} />
               </div>
             </div>
           </div>
